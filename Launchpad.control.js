@@ -10,8 +10,8 @@
 // Added UUID to make this unique version.
 // Cleaned up note maps and keys. Holding shift and pressing the left and right keys will now cycle through the modes note modes.
 // Added Yellow flashing LED on Track page when track is playing, red flashing when track is stopping.
-// Cleaned up edit mode.  Pressing the session button and user 1 now implements Cut/Paste. Pressing the session button and user 2 now impletements   
-// Copy/Paste.  Pressing the shift button and any of the mixer row buttons choses the length of clip to create for and touching the grid will create 
+// Cleaned up edit mode.  Pressing the session button and user 1 now implements Cut/Paste. Pressing the session button and user 2 now impletements
+// Copy/Paste.  Pressing the shift button and any of the mixer row buttons choses the length of clip to create for and touching the grid will create
 // an empty clip.
 // Changed Mixer Buttons to toggle switches from Momentary
 // Added Push Scale Modes (linear modes still accesable by pressing shift and D)
@@ -44,9 +44,8 @@ for	(index = 127; index > -1; index--)
 loadAPI(1);
 
 // This stuff is all about defining the script and getting it to autodetect and attach the script to the controller
-host.defineController("Novation", "Launchpad Script v3", "1.0", "b73e476c-e61b-11e4-8a00-1681e6b88ec1");
+host.defineController("Novation", "Launchpad", "1.0", "06ffe6d4-ba34-4a7d-b5b0-05981e04814d");
 host.defineMidiPorts(1, 1);
-host.addDeviceNameBasedDiscoveryPair(["Launchpad"], ["Launchpad"]);
 host.addDeviceNameBasedDiscoveryPair(["Launchpad S"], ["Launchpad S"]);
 host.addDeviceNameBasedDiscoveryPair(["Launchpad Mini"], ["Launchpad Mini"]);
 
@@ -55,7 +54,6 @@ for(var i=1; i<20; i++)
 {
    var name = i.toString() + "- Launchpad";
    host.addDeviceNameBasedDiscoveryPair([name], [name]);
-   host.addDeviceNameBasedDiscoveryPair(["Launchpad MIDI " + i.toString()], ["Launchpad MIDI " + i.toString()]);
    host.addDeviceNameBasedDiscoveryPair(["Launchpad S " + i.toString()], ["Launchpad S " + i.toString()]);
    host.addDeviceNameBasedDiscoveryPair(["Launchpad S MIDI " + i.toString()], ["Launchpad S MIDI " + i.toString()]);
    host.addDeviceNameBasedDiscoveryPair(["Launchpad Mini " + i.toString()], ["Launchpad Mini " + i.toString()]);
@@ -102,12 +100,12 @@ var activePage = null;
 function setActivePage(page)
 {
    var isInit = activePage == null;
-    
+
    if (!mixerButtonToggle)
    {
    ARMED=(TEMPMODE != TempMode.OFF)?TEMPMODE+1:false;
    }
-    
+
 
    if (page != activePage)
    {
@@ -210,7 +208,7 @@ function init()
    transport.addLauncherOverdubObserver(function(state){
         WRITEOVR=state;
    });
-   
+
    // a Trackbank is the tracks, sends and scenes being controlled, these arguments are set to 8,2,8 in the launchpad_constants.js file changing them will change the size of the grid displayed on the Bitwig Clip Launcher
    trackBank = host.createMainTrackBank(NUM_TRACKS, NUM_SENDS, NUM_SCENES);
 
@@ -222,7 +220,7 @@ function init()
       track.getVolume().addValueObserver(8, getTrackObserverFunc(t, volume));
       track.getPan().addValueObserver(userVarPans, getTrackObserverFunc(t, pan));
       track.getSend(0).addValueObserver(8, getTrackObserverFunc(t, sendA));
-      track.getSend(1).addValueObserver(8, getTrackObserverFunc(t, sendB));    
+      track.getSend(1).addValueObserver(8, getTrackObserverFunc(t, sendB));
       track.getMute().addValueObserver(getTrackObserverFunc(t, mute));
       track.getSolo().addValueObserver(getTrackObserverFunc(t, solo));
       track.getArm().addValueObserver(getTrackObserverFunc(t, arm));
@@ -231,19 +229,19 @@ function init()
       track.addVuMeterObserver(7, -1, true, getTrackObserverFunc(t, vuMeter));
       track.addIsSelectedObserver(getTrackObserverFunc(t, isSelected));
       track.addIsQueuedForStopObserver(getTrackObserverFunc(t, isQueuedForStop));
-       
+
       var clipLauncher = track.getClipLauncherSlots();
 
       clipLauncher.addHasContentObserver(getGridObserverFunc(t, hasContent));
       clipLauncher.addIsPlayingObserver(getGridObserverFunc(t, isPlaying));
       clipLauncher.addIsRecordingObserver(getGridObserverFunc(t, isRecording));
       clipLauncher.addIsQueuedObserver(getGridObserverFunc(t, isQueued));
-      clipLauncher.addIsStopQueuedObserver(getGridObserverFunc(t, isStopQueued)); 
-       
+      clipLauncher.addIsStopQueuedObserver(getGridObserverFunc(t, isStopQueued));
+
       //var primaryDevice = track.getDeviceChain.hasDrumPads(isDrumMachine);
        //println(isDrumMachine);
-	  
-      
+
+
    }
 
    // These next 4 pick up whether the Clip Launcher can be moved
@@ -266,7 +264,7 @@ function init()
    {
       gridPage.canScrollScenesDown = canScroll;
    });
-   
+
    // Cursor track allow selection of a track
    cursorTrack = host.createArrangerCursorTrack(0, 0);
    cursorTrack.addNoteObserver(seqPage.onNotePlay);
@@ -298,7 +296,7 @@ function init()
    cursorClip = host.createCursorClip(SEQ_BUFFER_STEPS, 128);
    cursorClip.addStepDataObserver(seqPage.onStepExists);
    cursorClip.addPlayingStepObserver(seqPage.onStepPlay);
-   
+
    cursorClip.addPlayingStepObserver(gridPage.onStepPlay);
    cursorClip.scrollToKey(0);
 
@@ -310,7 +308,7 @@ function init()
 
    updateNoteTranlationTable();
    updateVelocityTranslationTable();
-   // Calls the function just below which displays the funky Bitwig logo, which ends the initialization stage 
+   // Calls the function just below which displays the funky Bitwig logo, which ends the initialization stage
    animateLogo();
 }
 
@@ -451,7 +449,7 @@ function onMidi(status, data1, data2)
                     IS_GRID_PRESSED=false;
                     println("notehre")
                 }
-            } 
+            }
             break;
 
          case TopButton.USER1:
@@ -518,9 +516,9 @@ function onMidi(status, data1, data2)
    {
       var row = data1 >> 4;
       var column = data1 & 0xF;
-         
+
       println("row = " + row + "col = " + column)
-         
+
       if (column < 8)
       {
          activePage.onGridButton(row, column, data2 > 0);
@@ -595,7 +593,7 @@ function setCellLED(column, row, colour)
 /** Cache for LEDs needing to be updated, which is used so we can determine if we want to send the LEDs using the
  * optimized approach or not, and to send only the LEDs that has changed.
  */
- 
+
  // arrays of 80 buttons, the main 64 pads and the 8 at the top and 8 at side. Pending is used for lights to be sent, active contains the lights already on
 
 var pendingLEDs = new Array(80);
